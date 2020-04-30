@@ -3,6 +3,9 @@ package co.ozdev.services;
 import co.ozdev.dto.ExchangeDto;
 import co.ozdev.dto.ExchangeRateDto;
 import co.ozdev.dto.mappers.ExchangeRateMapper;
+import co.ozdev.exception.ExchangePairNotFoundException;
+import co.ozdev.model.Currency;
+import co.ozdev.model.OperationType;
 import co.ozdev.persistance.entities.CommissionEntity;
 import co.ozdev.persistance.entities.ExchangeRateEntity;
 import co.ozdev.persistance.repositories.ExchangeRateRepository;
@@ -25,7 +28,8 @@ public class ExchangeService {
     private ExchangeRateMapper exchangeRateMapper;
 
     public ExchangeRateDto setExchangeRate(ExchangeRateDto exchangeRateDto) {
-        ExchangeRateEntity exchangeRateEntity = exchangeRateRepository.findOneByCurrencyFromAndCurrencyTo(exchangeRateDto.getFrom(), exchangeRateDto.getTo());
+        ExchangeRateEntity exchangeRateEntity =
+                exchangeRateRepository.findOneByCurrencyFromAndCurrencyTo(exchangeRateDto.getFrom(), exchangeRateDto.getTo());
         if (exchangeRateEntity != null) {
             exchangeRateEntity.setRate(exchangeRateDto.getRate());
         } else {
@@ -37,18 +41,20 @@ public class ExchangeService {
 
     public List<ExchangeRateDto> getExchangeRates() {
         List<ExchangeRateEntity> exchangeRateEntities = exchangeRateRepository.findAll();
-        List<ExchangeRateDto> result = exchangeRateEntities.stream().map(entity -> exchangeRateMapper.convertToDto(entity)).collect(Collectors.toList());
+        List<ExchangeRateDto> result = exchangeRateEntities.stream().map(entity -> exchangeRateMapper.convertToDto(entity))
+                .collect(Collectors.toList());
         return result;
     }
 
     public ExchangeDto exchange(ExchangeDto exchangeDto) {
-        ExchangeRateEntity exchangeRate = exchangeRateRepository.findOneByCurrencyFromAndCurrencyTo(exchangeDto.getFrom(), exchangeDto.getTo());
+        OperationType operationType = exchangeDto.getOperationType();
+        ExchangeRateEntity exchangeRate = getExchangeRateBasedOnOperationType(exchangeDto.getFrom(), exchangeDto.getTo(), operationType);
         Hibernate.initialize(exchangeRate);
         BigDecimal rate = exchangeRate.getRate();
         CommissionEntity commission = exchangeRate.getCommission();
         BigDecimal commissionPt = commission.getCommissionPt();
         BigDecimal amountFrom, amountTo;
-        switch (exchangeDto.getOperationType()) {
+        switch (operationType) {
             default:
             case GET:
                 amountFrom = exchangeDto.getAmountFrom();
@@ -64,7 +70,25 @@ public class ExchangeService {
         return exchangeDto;
     }
 
+    private ExchangeRateEntity getExchangeRateBasedOnOperationType(Currency from, Currency to, OperationType operationType) {
+        ExchangeRateEntity result;
+        if (operationType.equals(OperationType.GET)) {
+            result = exchangeRateRepository.findOneByCurrencyFromAndCurrencyTo(from, to);
+            if (result == null) {
+                throw new ExchangePairNotFoundException(from, to);
+            }
+        } else {
+            result = exchangeRateRepository.findOneByCurrencyFromAndCurrencyTo(to, from);
+            if (result == null) {
+                throw new ExchangePairNotFoundException(to, from);
+            }
+        }
+        return result;
+    }
+
     private BigDecimal includeCommission(BigDecimal amount, BigDecimal commissionPt) {
-        return commissionPt != null ? amount.subtract((amount.multiply(commissionPt).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP))) : amount;
+        return commissionPt != null ?
+                amount.subtract((amount.multiply(commissionPt)
+                        .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP))) : amount;
     }
 }

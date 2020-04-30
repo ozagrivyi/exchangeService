@@ -2,6 +2,7 @@ package co.ozdev.integration;
 
 import co.ozdev.dto.ExchangeDto;
 import co.ozdev.dto.mappers.ExchangeRateMapper;
+import co.ozdev.exception.ExchangePairNotFoundException;
 import co.ozdev.model.Currency;
 import co.ozdev.model.OperationType;
 import co.ozdev.persistance.entities.CommissionEntity;
@@ -68,6 +69,23 @@ public class ExchageTests {
         Mockito.when(commissionRepository.findOneByExchangeRate(exchangeRateEntity)).thenReturn(commissionEntity);
         Mockito.when(exchangeRateRepository.findOneByCurrencyFromAndCurrencyTo(Currency.UAH, Currency.USD)).thenReturn(exchangeRateEntity);
 
+        exchangeRateEntity = new ExchangeRateEntity();
+        exchangeRateEntity.setCurrencyFrom(Currency.EUR);
+        exchangeRateEntity.setCurrencyTo(Currency.UAH);
+        exchangeRateEntity.setRate(BigDecimal.valueOf(31.2));
+
+        commissionEntity = new CommissionEntity();
+        commissionEntity.setCommissionPt(BigDecimal.valueOf(0.3d));
+        commissionEntity.setExchangeRate(exchangeRateEntity);
+        exchangeRateEntity.setCommission(commissionEntity);
+
+        commissionEntity.setExchangeRate(exchangeRateEntity);
+        exchangeRateEntity.setCommission(commissionEntity);
+
+        Mockito.when(commissionRepository.findOneByExchangeRate(exchangeRateEntity)).thenReturn(commissionEntity);
+        Mockito.when(exchangeRateRepository.findOneByCurrencyFromAndCurrencyTo(Currency.UAH, Currency.USD)).thenReturn(exchangeRateEntity);
+
+
     }
 
     @Test
@@ -84,7 +102,7 @@ public class ExchageTests {
         Assert.assertEquals(exchangeDto.getOperationType(), result.getOperationType());
         Assert.assertEquals(exchangeDto.getAmountTo(), result.getAmountTo());
         Assert.assertEquals(exchangeDto.getAmountFrom(), result.getAmountFrom());
-        Assert.assertEquals(result.getAmountTo(), BigDecimal.valueOf(38.37d));
+        Assert.assertEquals(BigDecimal.valueOf(38.37d), result.getAmountTo());
     }
 
     @Test
@@ -101,6 +119,18 @@ public class ExchageTests {
         Assert.assertEquals(exchangeDto.getOperationType(), result.getOperationType());
         Assert.assertEquals(exchangeDto.getAmountTo(), result.getAmountTo());
         Assert.assertEquals(exchangeDto.getAmountFrom(), result.getAmountFrom());
-        Assert.assertEquals(result.getAmountFrom(), BigDecimal.valueOf(2741.75d));
+        Assert.assertEquals(BigDecimal.valueOf(4.22d), result.getAmountFrom());
+    }
+
+    @Test(expected = ExchangePairNotFoundException.class)
+    public void exceptionWhenGiveExchangePairIsMissed() {
+        ExchangeDto exchangeDto = new ExchangeDto();
+        exchangeDto.setFrom(Currency.EUR);
+        exchangeDto.setTo(Currency.UAH);
+        exchangeDto.setAmountFrom(BigDecimal.valueOf(1000L));
+        exchangeDto.setAmountTo(BigDecimal.valueOf(110L));
+        exchangeDto.setOperationType(OperationType.GIVE);
+
+        ExchangeDto result = exchangeService.exchange(exchangeDto);
     }
 }
