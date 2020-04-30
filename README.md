@@ -31,7 +31,6 @@ You can use the following rest services when docker image is composed and deploy
 			&nbsp;&nbsp;&nbsp;**"to"**: "USD",<br/>
 			&nbsp;&nbsp;&nbsp;**"rate"**: 0.06<br/>
 		}<br/>
-		This means that data regarding exchange pair is saved successfully;<br/>
 		It will return http status code 400 and an error message in the case of any error;<br/>
 		It will return http status code 401 in the case of unauthorized access;<br/>
 	c. GET: localhost:8080/api/commissions - to get available commissions;<br/>
@@ -52,7 +51,6 @@ You can use the following rest services when docker image is composed and deploy
 			&nbsp;&nbsp;&nbsp;**"to"**: "USD",<br/>
 			&nbsp;&nbsp;&nbsp;**"commissionPt"**: 3<br/>
 		}<br/>
-		This means that data regarding the commission is saved successfully<br/>
 		It will return http status code 400 and an error message in the case of any error;<br/>
 		It will return http status code 401 in the case of unauthorized access;<br/>
 	e. POST: localhost:25100/api/exchange to exchage currencies;<br/>
@@ -79,7 +77,6 @@ You can use the following rest services when docker image is composed and deploy
 			&nbsp;&nbsp;&nbsp;**"operationType"**: "GET"<br/>
 		}<br/>
 		Either amountFrom or amountTo will be changed depending on operationType;<br/>
-		This means that data regarding the commission is saved successfully<br/>
 		It will return http status code 400 and an error message in the case of any error;<br/>
 		It will return http status code 401 in the case of unauthorized access;<br/>
  3. Exceptions:<br/>
