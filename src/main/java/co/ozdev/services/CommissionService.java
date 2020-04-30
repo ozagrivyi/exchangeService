@@ -2,6 +2,7 @@ package co.ozdev.services;
 
 import co.ozdev.dto.CommissionDto;
 import co.ozdev.dto.mappers.CommissionMapper;
+import co.ozdev.exception.ExchangePairNotFoundException;
 import co.ozdev.persistance.entities.CommissionEntity;
 import co.ozdev.persistance.entities.ExchangeRateEntity;
 import co.ozdev.persistance.repositories.CommissionRepository;
@@ -36,7 +37,7 @@ public class CommissionService {
             commissionRepository.save(commissionEntity);
             return commissionDto;
         } 
-        throw new RuntimeException("Exchange pair can not be found " + commissionDto.getFrom().toString() + ":" + commissionDto.getTo().toString());
+        throw new ExchangePairNotFoundException(commissionDto.getFrom(), commissionDto.getTo());
     }
 
     public List<CommissionDto> getCommissions() {

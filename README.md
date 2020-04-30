@@ -3,6 +3,13 @@ Currency exchange service
 
 1. Prerequisities:
 Make shure that docker is installed and add to path.
+2. Authentication:
+Spring basic auth with in-memory aurhentication has been used, so you can set it up via Postman or just pass 'Authorization' header in each request.
+User: 
+	Login: user1
+	Password: user1Secret
+Header:
+	Authorization: "Basic dXNlcjE6dXNlcjFTZWNyZXQ="
 2. Launching:
 To launch currency exchange service you should use run.bat (available in the root of the project).
 You can use the following rest services when docker image is composed and deployed:
@@ -75,3 +82,6 @@ You can use the following rest services when docker image is composed and deploy
 		This means that data regarding the commission is saved successfully
 		It will return http status code 400 and an error message in the case of any error;
 		It will return http status code 401 in the case of unauthorized access;
+ 3. Exceptions:
+	The following exception with http status code 400 will be return in the case when Commission with not existing exchange pair has been tried to add:
+	"Exchange pair (FROM:TO) can not be found"
