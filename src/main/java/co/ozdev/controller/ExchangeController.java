@@ -28,8 +28,8 @@ public class ExchangeController {
 
     @RequestMapping(value = "/exchange-rates", method = RequestMethod.POST)
     public ExchangeRateDto setExchangeRate(@Valid @RequestBody ExchangeRateDto exchangeRateDto) {
-        ExchangeRateDto result = exchangeService.setExchangeRate(exchangeRateDto);
-        return result;
+        exchangeService.setExchangeRate(exchangeRateDto);
+        return exchangeRateDto;
     }
 
     @RequestMapping(value = "/exchange", method = RequestMethod.POST)

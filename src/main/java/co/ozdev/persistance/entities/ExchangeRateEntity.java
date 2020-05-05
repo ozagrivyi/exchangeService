@@ -1,7 +1,7 @@
 package co.ozdev.persistance.entities;
 
 
-import co.ozdev.model.Currency;
+import co.ozdev.model.OperationType;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -10,10 +10,8 @@ import java.math.BigDecimal;
 @Entity
 public class ExchangeRateEntity {
     private Long id;
-    private Currency currencyFrom;
-    private Currency currencyTo;
     private BigDecimal rate;
-    private CommissionEntity commission;
+    private ExchangePairEntity exchangePair;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,20 +23,15 @@ public class ExchangeRateEntity {
         this.id = id;
     }
 
-    public Currency getCurrencyFrom() {
-        return currencyFrom;
+    @OneToOne
+    @MapsId
+    @JoinColumn(name="id", nullable=false)
+    public ExchangePairEntity getExchangePair() {
+        return exchangePair;
     }
 
-    public void setCurrencyFrom(Currency currencyFrom) {
-        this.currencyFrom = currencyFrom;
-    }
-
-    public Currency getCurrencyTo() {
-        return currencyTo;
-    }
-
-    public void setCurrencyTo(Currency currencyTo) {
-        this.currencyTo = currencyTo;
+    public void setExchangePair(ExchangePairEntity exchangePair) {
+        this.exchangePair = exchangePair;
     }
 
     public BigDecimal getRate() {
@@ -47,16 +40,5 @@ public class ExchangeRateEntity {
 
     public void setRate(BigDecimal rate) {
         this.rate = rate;
-    }
-
-    @OneToOne(fetch = FetchType.LAZY,
-            cascade =  CascadeType.ALL,
-            mappedBy = "exchangeRate")
-    public CommissionEntity getCommission() {
-        return commission;
-    }
-
-    public void setCommission(CommissionEntity commission) {
-        this.commission = commission;
     }
 }

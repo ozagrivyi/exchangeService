@@ -3,10 +3,11 @@ package co.ozdev.persistance.entities;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
+@Table(name = "COMMISSION")
 @Entity
 public class CommissionEntity {
     private Long id;
-    private ExchangeRateEntity exchangeRate;
+    private ExchangePairEntity exchangePair;
     private BigDecimal commissionPt;
 
     @Id
@@ -20,13 +21,14 @@ public class CommissionEntity {
     }
 
     @OneToOne
-    @JoinColumn(name = "exchangeRateId", nullable = false)
-    public ExchangeRateEntity getExchangeRate() {
-        return exchangeRate;
+    @MapsId
+    @JoinColumn(name = "id")
+    public ExchangePairEntity getExchangePair() {
+        return exchangePair;
     }
 
-    public void setExchangeRate(ExchangeRateEntity exchangeRate) {
-        this.exchangeRate = exchangeRate;
+    public void setExchangePair(ExchangePairEntity exchangePair) {
+        this.exchangePair = exchangePair;
     }
 
     public BigDecimal getCommissionPt() {

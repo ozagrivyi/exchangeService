@@ -2,10 +2,10 @@ server:
   port: 8080
 
 spring:
-  datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_SCHEMA:exchange}
-    username: ${DB_USERNAME:user1}
-    password: ${DB_PASSWORD:user1}
+#  datasource:
+#    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_SCHEMA:exchange}
+#    username: ${DB_USERNAME:user1}
+#    password: ${DB_PASSWORD:user1}
   jpa:
     generate-ddl: true
     properties.hibernate.jdbc.lob.non_contextual_creation: true

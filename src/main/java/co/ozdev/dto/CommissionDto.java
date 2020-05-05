@@ -2,11 +2,18 @@ package co.ozdev.dto;
 
 import co.ozdev.model.Currency;
 
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class CommissionDto {
     private Currency from;
     private Currency to;
+
+    @NotNull(message = "'commissionPt' can not be empty")
+    @DecimalMin(value = "0", message = "'commissionPt' should be greater than 0'" )
+    @DecimalMax(value = "100.0", message = "'commissionPt' should be less than 100'")
     private BigDecimal commissionPt;
 
     public Currency getFrom() {

@@ -7,7 +7,7 @@ services:
     container_name: exchage-service
     ports:
       - 8080:8080
-      - 25101:5105
+      - 5005:5005
     links:
       - exchange-service-postgres
     environment:

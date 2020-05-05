@@ -5,15 +5,29 @@ import co.ozdev.model.OperationType;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.Entity;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class ExchangeDto {
+
+    @NotNull(message = "'from' can not be empty")
     private Currency from;
+
+    @NotNull(message = "'to' can not be empty")
     private Currency to;
+
+    @NotNull(message = "'amountForm' can not be empty")
+    @DecimalMin(value = "0", message = "'amountFrom' should be greater than 0")
     private BigDecimal amountFrom;
+
+    @NotNull(message = "'amountTo' can not be empty")
+    @DecimalMin(value = "0", message = "'amountTo' should be greater than 0")
     private BigDecimal amountTo;
+
+    @NotNull(message = "'operationType' can not be empty")
     private OperationType operationType;
 
     public Currency getFrom() {

@@ -10,13 +10,14 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class ExchangeRateDto {
-    @CurrencyConstraint
+    @NotNull(message = "'from' can not be empty")
     private Currency from;
 
+    @NotNull(message = "'to' can not be empty")
     private Currency to;
 
-    @NotNull(message = "'Rate' field can not be null")
-    @DecimalMin(value = "0.05", message = "'Rate should be greater than or equal to 1.0'" )
+    @NotNull(message = "'Rate' can not be empty")
+    @DecimalMin(value = "0", message = "'Rate' should be greater than 0'" )
     private BigDecimal rate;
 
     public Currency getFrom() {
